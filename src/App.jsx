@@ -5,42 +5,39 @@ function App() {
   const[amount, setAmount] = useState(0);
   const[fromcurrency, setFromCurrency] = useState('USD');
   const[tocurrency, setToCurrency] = useState('KES');
-  const[rate, setRate] = useState(1);
+  const[result, setResult] = useState(1);
 
   const handleChange = async () => {
-    const rate = await currencyConverter(fromcurrency, tocurrency);
-    setRate(rate);
+   if(!amount){
+    alert('Please enter an amount');
+    return;
+   }
+   try{
+    const rates = await currencyConverter(fromcurrency);
+    const rate = rates(tocurrency);
+    setResult(amount * rate);
+   }
+   catch(error){
   }
 
-  
+
 
   return (
     <div className="App">
       <h1>Currency Converter</h1>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Amount:
-          <input type="number" value={amount} onChange={handleChange} />
-        </label>
-        <label>
-          From Currency:
-          <select value={fromcurrency} onChange={handleFromCurrencyChange}>
-            <option value="USD">USD</option>
-            <option value="KES">KES</option>
-          </select>
-        </label>
-        <label>
-          To Currency:
-          <select value={tocurrency} onChange={handleToCurrencyChange}>
-            <option value="USD">USD</option>
-            <option value="KES">KES</option>
-          </select>
-        </label>
-        <button type="submit">Convert</button>
-      </form>
-      <p>Amount Converted: {amountConverted}</p>
+      <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} />
+      <select value={fromcurrency} onChange={(e) => setFromCurrency(e.target.value)}>
+        <option value="USD">USD</option>
+        <option value="KES">KES</option>
+      </select>
+      <select value={tocurrency} onChange={(e) => setToCurrency(e.target.value)}>
+        <option value="USD">USD</option>
+        <option value="KES">KES</option>
+      </select>
+      <button onClick={handleChange}>Convert</button>
+      <p>{result}</p>
     </div>
   );
 }
-
+}
 export default App;
